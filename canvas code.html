@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Drawing App</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .toolbar {
+      margin: 15px;
+    }
+
+    button, input {
+      padding: 8px 12px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    canvas {
+      border: 2px solid #000;
+      background: white;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>HTML5 Canvas Drawing App</h1>
+
+  <div class="toolbar">
+    <!-- Color Picker -->
+    <label>Brush Color:</label>
+    <input type="color" id="colorPicker" value="#000000">
+
+    <!-- Brush Size -->
+    <label>Brush Size:</label>
+    <input type="range" id="brushSize" min="1" max="20" value="5">
+
+    <!-- Clear Button -->
+    <button id="clearBtn">Clear Canvas</button>
+  </div>
+
+  <!-- Canvas -->
+  <canvas id="drawingCanvas" width="900" height="500"></canvas>
+
+  <script>
+    // Select canvas and context
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Toolbar elements
+    const colorPicker = document.getElementById("colorPicker");
+    const brushSize = document.getElementById("brushSize");
+    const clearBtn = document.getElementById("clearBtn");
+
+    // Drawing variables
+    let isDrawing = false;
+
+    // Default settings
+    ctx.strokeStyle = colorPicker.value;
+    ctx.lineWidth = brushSize.value;
+    ctx.lineCap = "round";
+
+    // Start drawing
+    canvas.addEventListener("mousedown", (e) => {
+      isDrawing = true;
+
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    });
+
+    // Draw on canvas
+    canvas.addEventListener("mousemove", (e) => {
+      if (!isDrawing) return;
+
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+    });
+
+    // Stop drawing
+    canvas.addEventListener("mouseup", () => {
+      isDrawing = false;
+      ctx.closePath();
+    });
+
+    // Stop drawing if mouse leaves canvas
+    canvas.addEventListener("mouseleave", () => {
+      isDrawing = false;
+      ctx.closePath();
+    });
+
+    // Change brush color
+    colorPicker.addEventListener("input", () => {
+      ctx.strokeStyle = colorPicker.value;
+    });
+
+    // Change brush size
+    brushSize.addEventListener("input", () => {
+      ctx.lineWidth = brushSize.value;
+    });
+
+    // Clear canvas
+    clearBtn.addEventListener("click", () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  </script>
+
+</body>
+</html>
